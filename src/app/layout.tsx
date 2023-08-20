@@ -1,4 +1,5 @@
 import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from 'next';
@@ -26,6 +27,7 @@ export default function RootLayout({
                         defaultTheme="system"
                         enableSystem
                     >
+                        <Toaster />
                         {children}
                     </ThemeProvider>
                 </body>

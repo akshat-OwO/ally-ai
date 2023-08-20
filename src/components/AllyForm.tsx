@@ -2,7 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Ally, Category } from '@prisma/client';
+import axios from 'axios';
 import { Wand2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -27,6 +29,7 @@ import {
 } from './ui/select';
 import { Separator } from './ui/separator';
 import { Textarea } from './ui/textarea';
+import { useToast } from './ui/use-toast';
 
 interface AllyFormProps {
     initialData: Ally | null;
@@ -63,6 +66,9 @@ const formSchema = z.object({
 });
 
 const AllyForm: FC<AllyFormProps> = ({ initialData, categories }) => {
+    const { toast } = useToast();
+    const router = useRouter();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData || {
@@ -77,7 +83,25 @@ const AllyForm: FC<AllyFormProps> = ({ initialData, categories }) => {
 
     const isLoading = form.formState.isSubmitting;
 
-    const onSubmit = async (value: z.infer<typeof formSchema>) => {};
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+        try {
+            if (initialData) {
+                await axios.patch(`/api/ally/${initialData.id}`, values);
+            } else {
+                await axios.post('/api/ally', values);
+            }
+            toast({
+                description: 'Success.',
+            });
+            router.refresh();
+            router.push('/');
+        } catch (error) {
+            toast({
+                variant: 'destructive',
+                description: 'Something went wrong',
+            });
+        }
+    };
 
     return (
         <div className="h-full p-4 space-y-2 max-w-3xl mx-auto">
