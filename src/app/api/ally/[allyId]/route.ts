@@ -1,5 +1,5 @@
 import prismadb from '@/lib/prismadb';
-import { currentUser } from '@clerk/nextjs';
+import { auth, currentUser } from '@clerk/nextjs';
 import { NextResponse } from 'next/server';
 
 export async function PATCH(
@@ -35,6 +35,7 @@ export async function PATCH(
         const ally = await prismadb.ally.update({
             where: {
                 id: params.allyId,
+                userId: user.id,
             },
             data: {
                 categoryId,
@@ -51,6 +52,31 @@ export async function PATCH(
         return NextResponse.json(ally);
     } catch (error) {
         console.log('[Ally Patch', error);
+        return new NextResponse('Internal Error', { status: 500 });
+    }
+}
+
+export async function DELETE(
+    req: Request,
+    { params }: { params: { allyId: string } }
+) {
+    try {
+        const { userId } = auth();
+
+        if (!userId) {
+            return new NextResponse('Unauthorized', { status: 401 });
+        }
+
+        const ally = await prismadb.ally.delete({
+            where: {
+                userId,
+                id: params.allyId,
+            },
+        });
+
+        return NextResponse.json(ally);
+    } catch (error) {
+        console.log('[ally Delete]', error);
         return new NextResponse('Internal Error', { status: 500 });
     }
 }

@@ -1,5 +1,6 @@
 import AllyForm from '@/components/AllyForm';
 import prismadb from '@/lib/prismadb';
+import { auth, redirectToSignIn } from '@clerk/nextjs';
 import { FC } from 'react';
 
 interface pageProps {
@@ -9,11 +10,17 @@ interface pageProps {
 }
 
 const page: FC<pageProps> = async ({ params }) => {
+    const { userId } = auth();
     // TODO check subscription
+
+    if (!userId) {
+        return redirectToSignIn();
+    }
 
     const ally = await prismadb.ally.findUnique({
         where: {
             id: params.allyId,
+            userId,
         },
     });
 
