@@ -28,9 +28,30 @@ model Ally {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category  @relation(fields: [categoryId], references: [id])
   categoryId String
+  messages   Message[]
 
   @@index([categoryId])
   @@fulltext([name])
+}
+
+enum Role {
+  user
+  system
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  role      Role     @default(user)
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  allyId String
+  userId String
+
+  ally Ally @relation(fields: [allyId], references: [id], onDelete: Cascade)
+
+  @@index([allyId])
 }
