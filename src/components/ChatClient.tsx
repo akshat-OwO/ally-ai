@@ -28,7 +28,7 @@ const ChatClient: FC<ChatClientProps> = ({ ally }) => {
             onFinish(prompt, completion) {
                 const systemMessage: ChatMessageProps = {
                     role: 'system',
-                    content: 'completion',
+                    content: completion,
                 };
                 setMessages((current) => [...current, systemMessage]);
                 setInput('');

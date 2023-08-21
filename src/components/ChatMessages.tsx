@@ -44,7 +44,7 @@ const ChatMessages: FC<ChatMessagesProps> = ({ ally, isLoading, messages }) => {
                     key={message.content}
                     role={message.role}
                     content={message.content}
-                    src={message.src}
+                    src={ally.src}
                 />
             ))}
             {isLoading && (
