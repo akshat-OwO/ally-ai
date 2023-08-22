@@ -1,5 +1,6 @@
 'use client';
 
+import { useProModalStore } from '@/hooks/use-pro-model';
 import { cn } from '@/lib/utils';
 import { UserButton } from '@clerk/nextjs';
 import { Sparkles } from 'lucide-react';
@@ -15,9 +16,13 @@ const font = Poppins({
     subsets: ['latin'],
 });
 
-interface NavbarProps {}
+interface NavbarProps {
+    isPro: boolean;
+}
 
-const Navbar: FC<NavbarProps> = ({}) => {
+const Navbar: FC<NavbarProps> = ({ isPro }) => {
+    const proModal = useProModalStore();
+
     return (
         <div className="fixed w-full z-50 flex justify-between items-center py-2 px-4 border-b border-primary/10 bg-secondary h-16">
             <div className="flex items-center">
@@ -34,10 +39,16 @@ const Navbar: FC<NavbarProps> = ({}) => {
                 </Link>
             </div>
             <div className="flex items-center gap-x-3">
-                <Button variant="premium" size="sm">
-                    Upgrade
-                    <Sparkles className="h-4 w-4 fill-white text-white ml-2" />
-                </Button>
+                {!isPro && (
+                    <Button
+                        onClick={proModal.onOpen}
+                        variant="premium"
+                        size="sm"
+                    >
+                        Upgrade
+                        <Sparkles className="h-4 w-4 fill-white text-white ml-2" />
+                    </Button>
+                )}
                 <ModeToggle />
                 <UserButton afterSignOutUrl="/" />
             </div>

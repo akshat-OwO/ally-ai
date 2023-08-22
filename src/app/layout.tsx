@@ -1,3 +1,4 @@
+import ProModal from '@/components/ProModal';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
@@ -28,6 +29,7 @@ export default function RootLayout({
                         enableSystem
                     >
                         <Toaster />
+                        <ProModal />
                         {children}
                     </ThemeProvider>
                 </body>
